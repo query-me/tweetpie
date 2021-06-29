@@ -6,7 +6,7 @@ import json
 with open("credentials.json", "r") as file:
     creds = json.load(file)
 
-# 認証情報取得
+# get credential values
 cred = credential.Credential(
     creds['consumer_key'],
     creds['consumer_secret'],
@@ -15,21 +15,23 @@ cred = credential.Credential(
 )
 collector = tweetpie.Tweetpie(cred)
 
-# 検索条件
-limit_count = 10 # 最大取得件数/日
-kwd = 'ラーメン AND 食べた' # キーワードからクエリ作成
+# search condtion
+limit_count = 10 # maximum number of tweets to retrieve (per day)
+kwd = 'pasta AND perfect' # queries
 query = kwd + " -? -filter:retweets -filter:news -filter:replies -source:IFTTT -source:dlvr.it -source:twittbot.net -source:autotweety -source:Google"
-start_dt = datetime.datetime.strptime('20210629', '%Y%m%d') # 検索開始日
-period_dt = 7 # 検索開始日から過去検索する日数
-kwd_in_profile = ['歳'] # プロフィールに含める単語
-kwd_notin_profile = ['投不労所得資', '稼げる', '毎月', '儲ける'] # プロフィールに含めない単語
+start_dt = datetime.datetime.strptime('20210629', '%Y%m%d') # first date to search
+period_dt = 7 # first search date -> 'start_dt' look for tweets for the past 'period_at' days
+kwd_in_profile = ['age'] # keywords to be included in profile
+kwd_notin_profile = ['business', 'stock'] # keywords not to be included in profile
+lang = 'en' #lang
 
-# 検索
+# search
 collected = collector.search(limit_count=limit_count, query=query,
                             start_dt=start_dt, period_dt=period_dt,
-                            kwd_in_profile=kwd_in_profile, kwd_notin_profile=kwd_notin_profile)
+                            kwd_in_profile=kwd_in_profile,
+                            kwd_notin_profile=kwd_notin_profile, lang=lang)
 
 API = api.Api(cred)
 for item in collected:
     print('collected tweet :{}'.format(item.tweet_url))
-    # API.like(item.tid) # いいねする
+    # API.like(item.tid) # like the tweet

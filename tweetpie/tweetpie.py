@@ -24,13 +24,13 @@ class Tweetpie:
             self.credential.access_secret
             )
 
-    def _search_twitter_timeline(self, limit_count, keyword, include_in_profile,
+    def _search_twitter_timeline(self, limit_count, keyword, lang, include_in_profile,
                                 exclude_in_profile, since='', until='', max_id=''):
         timelines = []
         id = ''
         twitter = self._get_twitter_session()
 
-        params = {'q': keyword, 'count': limit_count, 'result_type': 'mixed', 'lang':'ja'}
+        params = {'q': keyword, 'count': limit_count, 'result_type': 'mixed', 'lang':lang}
 
         if max_id != '':
             params['max_id'] = max_id
@@ -130,7 +130,7 @@ class Tweetpie:
     def search(self, limit_count=10, query='',
                 start_dt=datetime.datetime.today(),
                 period_dt=1, kwd_in_profile=[],
-                kwd_notin_profile=[]):
+                kwd_notin_profile=[], lang='ja'):
 
         timelines = []
         max_id = ''
@@ -145,7 +145,7 @@ class Tweetpie:
             while True:
                 self._check_api_remain_and_sleep()
 
-                timelines, max_id = self._search_twitter_timeline(limit_count, query,
+                timelines, max_id = self._search_twitter_timeline(limit_count, query, lang,
                                                                 kwd_in_profile, kwd_notin_profile,
                                                                 since, until, max_id)
 
